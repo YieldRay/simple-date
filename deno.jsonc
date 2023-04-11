@@ -1,0 +1,12 @@
+{
+    "tasks": {
+        "build": "tsc",
+        "lint": "deno lint src/",
+        "test": "deno test",
+        "bench": "deno bench"
+    },
+    "importMap": "deno.jsonc",
+    "imports": {
+        "std/": "https://deno.land/std@0.182.0/"
+    }
+}
