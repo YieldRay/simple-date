@@ -19,6 +19,40 @@ export interface SimpleDateParts {
     timezone: number;
 }
 
+export function fromDate(date: Date) {
+    type SimpleDateFnParts = {
+        [key in keyof SimpleDateParts]: () => SimpleDateParts[key];
+    };
+
+    return {
+        date: () => date.getDate() as IntRangeInclude<1, 31>,
+        day: () => date.getDay() as IntRangeInclude<0, 6>,
+        year: () => date.getFullYear(),
+        hours: () => date.getHours() as IntRangeInclude<0, 23>,
+        milliseconds: () => date.getMilliseconds() as IntRangeInclude<0, 999>,
+        minutes: () => date.getMilliseconds() as IntRangeInclude<0, 59>,
+        month: () => (date.getMonth() + 1) as IntRangeInclude<1, 12>,
+        seconds: () => date.getSeconds() as IntRangeInclude<0, 59>,
+        time: () => date.getTime(),
+        timezone: () => -(date.getTimezoneOffset() / 60),
+    } as SimpleDateFnParts;
+}
+
+export function defineDateProperties<T>(obj: T, date: Date) {
+    return Object.defineProperties(
+        obj,
+        Object.fromEntries(
+            Object.entries(fromDate(date)).map(([prop, get]) => [
+                prop,
+                {
+                    enumerable: true,
+                    get,
+                },
+            ])
+        )
+    ) as T & SimpleDateParts;
+}
+
 /**
  * a `SimpleDate` class, creating a object that owns `SimpleDateParts`
  * @example
@@ -28,81 +62,24 @@ export default class SimpleDate implements SimpleDateParts {
     /**
      * simply a Date object, do not change it, though changing it has no effect
      */
-    innerDate: Date;
+    getInnerDate() {
+        return this.#date;
+    }
+
+    #date: Date;
 
     /**
      * the constructor simply collect all parameters and apply them to a Date contsructor
      */
-
-    constructor(...args: ConstructorParameters<typeof Date>) {
-        const $date$ = new Date(...args);
-        this.innerDate = $date$;
-        Object.defineProperties(this, {
-            date: {
-                enumerable: true,
-                get() {
-                    return $date$.getDate() as IntRangeInclude<1, 31>;
-                },
-            },
-            day: {
-                enumerable: true,
-                get() {
-                    return $date$.getDay() as IntRangeInclude<0, 6>;
-                },
-            },
-            year: {
-                enumerable: true,
-                get() {
-                    return $date$.getFullYear();
-                },
-            },
-            hours: {
-                enumerable: true,
-                get() {
-                    return $date$.getHours() as IntRangeInclude<0, 23>;
-                },
-            },
-            milliseconds: {
-                enumerable: true,
-                get() {
-                    return $date$.getMilliseconds() as IntRangeInclude<0, 999>;
-                },
-            },
-            minutes: {
-                enumerable: true,
-                get() {
-                    return $date$.getMilliseconds() as IntRangeInclude<0, 59>;
-                },
-            },
-            month: {
-                enumerable: true,
-                get() {
-                    return ($date$.getMonth() + 1) as IntRangeInclude<1, 12>;
-                },
-            },
-            seconds: {
-                enumerable: true,
-                get() {
-                    return $date$.getSeconds() as IntRangeInclude<0, 59>;
-                },
-            },
-            time: {
-                enumerable: true,
-                get() {
-                    return $date$.getTime();
-                },
-            },
-            timezone: {
-                enumerable: true,
-                get() {
-                    return -($date$.getTimezoneOffset() / 60);
-                },
-            },
-        });
+    constructor(...args: ConstructorParameters<DateConstructor>) {
+        // TODO: the constructor cannot overload, will fix it
+        const date = new Date(...args);
+        this.#date = date;
+        defineDateProperties(this, date);
     }
 
     get date(): IntRangeInclude<1, 31> {
-        return this.day;
+        return this.date;
     }
     get day(): IntRangeInclude<1, 6> {
         return this.day;
