@@ -7,6 +7,6 @@
     },
     "importMap": "deno.jsonc",
     "imports": {
-        "std/": "https://deno.land/std@0.182.0/"
+        "std/": "https://deno.land/std@0.177.1/"
     }
 }

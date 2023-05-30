@@ -19,11 +19,11 @@ export interface SimpleDateParts {
     timezone: number;
 }
 
-export function fromDate(date: Date) {
-    type SimpleDateFnParts = {
-        [key in keyof SimpleDateParts]: () => SimpleDateParts[key];
-    };
+type SimpleDateFnParts = {
+    [key in keyof SimpleDateParts]: () => SimpleDateParts[key];
+};
 
+export function toDateFnParts(date: Date) {
     return {
         date: () => date.getDate() as IntRangeInclude<1, 31>,
         day: () => date.getDay() as IntRangeInclude<0, 6>,
@@ -42,7 +42,7 @@ export function defineDateProperties<T>(obj: T, date: Date) {
     return Object.defineProperties(
         obj,
         Object.fromEntries(
-            Object.entries(fromDate(date)).map(([prop, get]) => [
+            Object.entries(toDateFnParts(date)).map(([prop, get]) => [
                 prop,
                 {
                     enumerable: true,
@@ -59,23 +59,31 @@ export function defineDateProperties<T>(obj: T, date: Date) {
  * console.log({...new SimpleDate()})
  */
 export default class SimpleDate implements SimpleDateParts {
-    /**
-     * simply a Date object, do not change it, though changing it has no effect
-     */
-    getInnerDate() {
-        return this.#date;
-    }
-
     #date: Date;
 
     /**
-     * the constructor simply collect all parameters and apply them to a Date contsructor
+     * this constructor simply collect all parameters and apply them to a `Date()` contsructor
      */
+
+    // deno-lint-ignore ban-ts-comment
+    //@ts-ignore
+    constructor();
+    constructor(value: Date);
+    constructor(value: number);
+    constructor(dateString: string);
+    constructor(
+        year: number,
+        monthIndex: number,
+        date?: number,
+        hours?: number,
+        minutes?: number,
+        seconds?: number,
+        ms?: number
+    );
     constructor(...args: ConstructorParameters<DateConstructor>) {
-        // TODO: the constructor cannot overload, will fix it
-        const date = new Date(...args);
-        this.#date = date;
-        defineDateProperties(this, date);
+        const d = new Date(...args);
+        this.#date = d;
+        defineDateProperties(this, d);
     }
 
     get date(): IntRangeInclude<1, 31> {

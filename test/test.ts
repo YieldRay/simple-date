@@ -17,3 +17,11 @@ Deno.test(function hms() {
         "1/1/1"
     );
 });
+
+Deno.test(function hms() {
+    const sd = new SimpleDate(2000, 0, 1, 1, 1, 1, 1);
+    assertEquals(
+        sd.format(({ hours, minutes, seconds }) => `${hours}/${minutes}/${seconds}`),
+        "1/1/1"
+    );
+});
