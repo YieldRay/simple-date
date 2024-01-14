@@ -5,8 +5,7 @@
         "test": "deno test",
         "bench": "deno bench"
     },
-    "importMap": "deno.jsonc",
     "imports": {
-        "std/": "https://deno.land/std@0.177.1/"
+        "std/": "https://deno.land/std@0.212.0/"
     }
 }

@@ -1,27 +1,27 @@
-import { assertEquals } from "std/testing/asserts.ts";
-import SimpleDate from "../src/simple-date.ts";
+import { assertEquals } from "std/assert/assert_equals.ts";
+import { simpleDate, format, padZero } from "./../src/simple-date.ts";
 
 Deno.test(function YMD() {
     // Date.UTC(year, month, day, hour, minute, second, millisecond)
-    const sd = new SimpleDate(new Date(2000, 0, 1, 1, 1, 1, 1));
+    const sd = simpleDate(new Date(2000, 0, 1, 1, 1, 1, 1));
     assertEquals(
-        sd.format(({ year, month, date }) => `${year}/${month}/${date}`),
-        "2000/1/1"
+        format(sd, ({ year, month, date }) => `${year}/${padZero(month, 2)}/${padZero(date, 2)}`),
+        "2000/01/01"
     );
 });
 
 Deno.test(function hms() {
-    const sd = new SimpleDate(new Date(2000, 0, 1, 1, 1, 1, 1));
+    const sd = simpleDate(new Date(2000, 0, 1, 1, 1, 1, 1));
     assertEquals(
-        sd.format(({ hours, minutes, seconds }) => `${hours}/${minutes}/${seconds}`),
+        format(sd, ({ hours, minutes, seconds }) => `${hours}/${minutes}/${seconds}`),
         "1/1/1"
     );
 });
 
 Deno.test(function hms() {
-    const sd = new SimpleDate(2000, 0, 1, 1, 1, 1, 1);
+    const sd = simpleDate(new Date(2000, 0, 1, 1, 1, 1, 1));
     assertEquals(
-        sd.format(({ hours, minutes, seconds }) => `${hours}/${minutes}/${seconds}`),
+        format(sd, ({ hours, minutes, seconds }) => `${hours}/${minutes}/${seconds}`),
         "1/1/1"
     );
 });
