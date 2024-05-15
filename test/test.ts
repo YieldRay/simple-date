@@ -1,5 +1,5 @@
-import { assertEquals } from "std/assert/assert_equals.ts";
-import { simpleDate, format, padZero } from "./../src/simple-date.ts";
+import { assertEquals } from "@std/assert/assert-equals";
+import { simpleDate, format, padZero } from "../src/simple-date.ts";
 
 Deno.test(function YMD() {
     // Date.UTC(year, month, day, hour, minute, second, millisecond)

@@ -7,11 +7,12 @@ Prefer [`Intl.DateTimeFormat`](https://developer.mozilla.org/docs/Web/JavaScript
 ## usage
 
 ```ts
-import { simpleDate, format, padZero } from "./simple-date.ts";
+import { simpleDate, simpleDateUTC, format, padZero } from "./simple-date.ts";
 
 console.log(
     format(
         simpleDate(new Date(2000, 0, 1, 1, 1, 1, 1)),
+        // OR: simpleDateUTC(...)
         ({ year, month, date }) => `${year}/${padZero(month, 2)}/${padZero(date, 2)}`
     )
 );
